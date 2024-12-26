@@ -13,6 +13,7 @@ import pygame as pg
 from data.main import main
 import ctypes
 
+
 def is_admin():
     """Check if the script is running with admin privileges."""
     try:

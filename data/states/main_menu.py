@@ -10,6 +10,9 @@ class Menu(tools._State):
     def __init__(self):
         """Initializes the state"""
         tools._State.__init__(self)
+        self.sprite_sheet = None
+        self.overhead_info = None
+        self.game_info = None
         persist = {c.COIN_TOTAL: 0,
                    c.SCORE: 0,
                    c.LIVES: 3,

@@ -1,9 +1,9 @@
 __author__ = 'justinarmstrong'
 
 import pygame as pg
-from .. import setup
-from .. import constants as c
-from . import flashing_coin
+from data import setup
+from data import constants as c
+from data.components import flashing_coin
 
 
 class Character(pg.sprite.Sprite):
