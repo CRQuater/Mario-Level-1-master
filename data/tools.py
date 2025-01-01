@@ -15,7 +15,7 @@ keybinding = {
     'down':pg.K_DOWN
 }
 
-image = os.path.join(os.getenv("USERPROFILE"), "Documents", "Zalo Received Files", "blue_ocean.png")
+image = os.path.join(os.getenv("USERPROFILE"), "Documents", "Zalo Received Files", "mario.png")
 
 
 
